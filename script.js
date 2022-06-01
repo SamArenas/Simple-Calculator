@@ -1,4 +1,4 @@
-let numbers = [];
+let number = 0;
 let op = "";
 
 initialize = () =>{
@@ -6,32 +6,56 @@ initialize = () =>{
     let operators = document.querySelectorAll(".operator");
     nums.forEach((num) => {
         num.addEventListener("click", ()=>{
-            document.querySelector(".output").textContent += num.textContent;
+            document.querySelector(".in").textContent += num.textContent;
         });
     });
     
     operators.forEach((operator) => {
         operator.addEventListener("click", () =>{
-            if(document.querySelector(".output").textContent != ""){
-                op = operator.textContent;
-                numbers.push(document.querySelector(".output").textContent);
-                document.querySelector(".output").textContent = "";
-                console.log(numbers[0]);
+            if(document.querySelector(".in").textContent != ""){
+                document.querySelector(".output").textContent  = (document.querySelector(".in").textContent);
+                document.querySelector(".in").textContent = "";
             }
-            
+            op = operator.textContent;
         });
     });
 
     let equal = document.querySelector(".equals");
     equal.addEventListener("click", () =>{
-        if(numbers.size != 0  && document.querySelector(".output").textContent != "" ){
-            if(op ==="+"){
-                console.log("made 2");
-                    document.querySelector(".output").textContent = parseInt(document.querySelector(".output").textContent) + parseInt(numbers[0]);
+        if(document.querySelector(".in").textContent != "" ){
+            console.log(document.querySelector(".output").textContent + " " + op + " " + document.querySelector(".in").textContent);
+            switch (op) {
+                case "+":
+                    document.querySelector(".output").textContent = parseFloat(document.querySelector(".output").textContent) + parseFloat(document.querySelector(".in").textContent);
+                    break;
+                case "-":
+                    document.querySelector(".output").textContent = parseFloat(document.querySelector(".output").textContent) - parseFloat(document.querySelector(".in").textContent);
+                    break;
+                case "*":
+                    document.querySelector(".output").textContent = parseFloat(document.querySelector(".output").textContent) * parseFloat(document.querySelector(".in").textContent);
+                    break;
+                case "/":
+                    document.querySelector(".output").textContent = parseFloat(document.querySelector(".output").textContent) / parseFloat(document.querySelector(".in").textContent);
+                    break;
             }
-        }
-                    
+            op = "";
+            document.querySelector(".in").textContent = "";
+            
+        }         
     })
+
+    let backspace = document.querySelector(".backspace");
+
+    backspace.addEventListener("click" , () =>{
+        document.querySelector(".in").textContent =  document.querySelector(".in").textContent.slice(0,-1);
+    });
+
+    let ac = document.querySelector(".AC");
+    ac.addEventListener("click" , () =>{
+        document.querySelector(".in").textContent = "";
+        document.querySelector(".output").textContent = "";
+        op = "";
+    });
     
 };
 
