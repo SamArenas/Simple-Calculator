@@ -1,119 +1,117 @@
-let number = 0;
 let op = "";
-let numerator = document.querySelector(".output");
-let denominator = document.querySelector(".in");
+let points = 0;
 
+const equalBtn = document.querySelector(".equals");
+const percentBtn = document.querySelector(".percent");
+const acBtn = document.querySelector(".AC");
+const backspaceBtn = document.querySelector(".backspace");
+const numbers = document.querySelectorAll(".num");
+const operators = document.querySelectorAll(".operator");
+const numerator = document.querySelector(".output");
+const denominator = document.querySelector(".in");
+const pointBtn = document.querySelector(".point");
+const operatorDisplay = document.querySelector(".operation");
 
-initialize = () => {
-    let equalBtn = document.querySelector(".equals");
-    let percentBtn = document.querySelector(".percent");
-    let acBtn = document.querySelector(".AC");
-    let backspaceBtn = document.querySelector(".backspace");
+function numberInsert(e) {
+    if (denominator.textContent.length < 17) {
+        e.type === "click" ? denominator.textContent += this.textContent : denominator.textContent += e.key;
+    }
+};
 
-    let nums = document.querySelectorAll(".num");
-    let operators = document.querySelectorAll(".operator");
-
-
-    let numInsert = function (val) {
-        if (val.type === "click") {
-            denominator.textContent += this.textContent;
-        }
-        else {
-            denominator.textContent += val.key;
-        }
-
-    };
-
-    let operatorSelect = function () {
-        if (denominator.textContent !== "") {
-            numerator.textContent = denominator.textContent;
-            denominator.textContent = "";
-        }
-        op = this.textContent;
-    };
-
-    let solve = function () {
-        if (denominator.textContent !== "") {
-            //console.log(numerator.textContent + " " + op + " " + denominator.textContent);
-            switch (op) {
-                case "+":
-                    numerator.textContent = parseFloat(numerator.textContent) + parseFloat(denominator.textContent);
-                    break;
-                case "-":
-                    numerator.textContent = parseFloat(numerator.textContent) - parseFloat(denominator.textContent);
-                    break;
-                case "*":
-                    numerator.textContent = parseFloat(numerator.textContent) * parseFloat(denominator.textContent);
-                    break;
-                case "/":
-                    numerator.textContent = parseFloat(numerator.textContent) / parseFloat(denominator.textContent);
-                    break;
-
-                default:
-                    numerator.textContent = denominator.textContent;
-                    break;
-            }
-            op = "";
-
-            denominator.textContent = "";
-        };
-    };
-
-
-    //add click event for each number
-    nums.forEach((num) => {
-        num.addEventListener("click", numInsert);
-    });
-
-
-    //add click event for operator selected
-    operators.forEach((operator) => {
-        operator.addEventListener("click", operatorSelect);
-    });
-
-    // click event for equal button
-    equalBtn.addEventListener("click", solve);
-
-    //events for backspace button, clear all and percent btn
-    backspaceBtn.addEventListener("click", () => {
-        denominator.textContent = denominator.textContent.slice(0, -1);
-    });
-
-    acBtn.addEventListener("click", () => {
+function operatorSelect(e) {
+    if (denominator.textContent !== "" && numerator.textContent === "") {
+        numerator.textContent = denominator.textContent;
         denominator.textContent = "";
-        numerator.textContent = "";
-        op = "";
-    });
+    }
+    e.type === "click" ? op = this.textContent : op = e.key;
+    operatorDisplay.textContent = op;
+};
 
-    percentBtn.addEventListener("click", () => {
-        if (denominator.textContent === "") {
-            numerator.textContent = parseFloat(numerator.textContent) / 100;
-        }
-        else {
-            denominator.textContent = parseFloat(denominator.textContent) / 100;
-        }
-    });
+function deleteNumber() {
+    denominator.textContent = denominator.textContent.slice(0, -1);
+};
 
-    document.addEventListener("keydown", (e) => {
-        if (e.key.match(/[0-9]/g)) {
-            numInsert(e);
-        }
-
-        else if (e.key.match(/ [*+-/] /g)) {
-            operatorSelect(e);
-        }
-
-        else if (e.key === "Backspace") {
-            denominator.textContent = denominator.textContent.slice(0, -1);
-        }
-
-        if (e.key === "Enter" || e.key === "=") {
-            e.preventDefault();
-            solve();
-
-        }
-    });
+function clearAll() {
+    denominator.textContent = "";
+    numerator.textContent = "";
+    operatorDisplay.textContent = "";
+    op = "";
 
 };
 
-initialize();
+function percent() {
+    denominator.textContent = parseFloat(denominator.textContent) / 100;
+}
+
+function insertPoint() {
+    if (!denominator.textContent.includes('.')) {
+        denominator.textContent += ".";
+    }
+}
+
+function solve() {
+    if (denominator.textContent !== "") {
+        switch (op) {
+            case "+":
+                denominator.textContent = parseFloat(numerator.textContent) + parseFloat(denominator.textContent);
+                break;
+            case "-":
+                denominator.textContent = parseFloat(numerator.textContent) - parseFloat(denominator.textContent);
+                break;
+            case "*":
+                denominator.textContent = parseFloat(numerator.textContent) * parseFloat(denominator.textContent);
+                break;
+            case "/":
+                denominator.textContent = parseFloat(numerator.textContent) / parseFloat(denominator.textContent);
+                break;
+
+            default:
+                denominator.textContent = denominator.textContent;
+                break;
+        }
+        op = "";
+        numerator.textContent = "";
+        operatorDisplay.textContent = "";
+    };
+};
+
+numbers.forEach((number) => {
+    number.addEventListener("click", numberInsert);
+});
+
+operators.forEach((operator) => {
+    operator.addEventListener("click", operatorSelect);
+});
+
+equalBtn.addEventListener("click", solve);
+
+backspaceBtn.addEventListener("click", deleteNumber);
+
+acBtn.addEventListener("click", clearAll);
+
+percentBtn.addEventListener("click", percent);
+
+pointBtn.addEventListener("click", insertPoint);
+
+document.addEventListener("keydown", (e) => {
+    if (e.key.match(/[0-9]/g)) {
+        numberInsert(e);
+    }
+
+    else if (e.key.match(/[+*\/-]/g)) {
+        operatorSelect(e);
+    }
+
+    else if (e.key === "Backspace") {
+        deleteNumber();
+    }
+
+    else if (e.key === ".") {
+        insertPoint();
+    }
+
+    else if (e.key === "Enter" || e.key === "=") {
+        e.preventDefault();
+        solve();
+    }
+});
